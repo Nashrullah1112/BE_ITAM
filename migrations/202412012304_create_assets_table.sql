@@ -1,0 +1,12 @@
+CREATE TABLE IF NOT EXISTS assets (
+  id SERIAL PRIMARY KEY,
+  serial_number TEXT NULL,
+  brand TEXT NULL,
+  model TEXT NULL,
+  receipt_number TEXT NULL,
+  active BOOLEAN NULL,
+  vendor_id INT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (vendor_id) REFERENCES vendors (id) ON DELETE CASCADE ON UPDATE CASCADE
+);
