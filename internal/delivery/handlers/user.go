@@ -133,6 +133,8 @@ func (h *UserHandler) Update(c *fiber.Ctx) error {
 		return c.Status(http.StatusBadRequest).JSON(response.ResponseError(err))
 	}
 
+	dto.ID = id
+
 	if err := validator.New().Struct(dto); err != nil {
 		fields := []string{}
 		if verr, ok := err.(validator.ValidationErrors); ok {
@@ -142,8 +144,6 @@ func (h *UserHandler) Update(c *fiber.Ctx) error {
 		}
 		return c.Status(fiber.StatusBadRequest).JSON(response.ResponseValidation(fields))
 	}
-
-	dto.ID = id
 
 	data, err := h.UserCommandUsecase.Update(dto)
 	if err != nil {
@@ -165,6 +165,8 @@ func (h *UserHandler) UpdatePartial(c *fiber.Ctx) error {
 		return c.Status(http.StatusBadRequest).JSON(response.ResponseError(err))
 	}
 
+	dto.ID = id
+
 	if err := validator.New().Struct(dto); err != nil {
 		fields := []string{}
 		if verr, ok := err.(validator.ValidationErrors); ok {
@@ -174,8 +176,6 @@ func (h *UserHandler) UpdatePartial(c *fiber.Ctx) error {
 		}
 		return c.Status(fiber.StatusBadRequest).JSON(response.ResponseValidation(fields))
 	}
-
-	dto.ID = id
 
 	data, err := h.UserCommandUsecase.UpdatePartial(dto)
 	if err != nil {
