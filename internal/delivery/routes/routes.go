@@ -25,11 +25,11 @@ func (r *Routes) Resource() {
 	auth.Post("/login", r.AuthHandler.Login)
 
 	users := prefix.Group("/users")
-	users.Get("", r.JWTMiddleware.Authentication, r.JWTMiddleware.Authorization("admin", "user"), r.UserHandler.FindAll)
-	users.Get("/:id", r.JWTMiddleware.Authentication, r.JWTMiddleware.Authorization("admin", "user"), r.UserHandler.FindByID)
-	users.Get("/email/:email", r.JWTMiddleware.Authentication, r.JWTMiddleware.Authorization("admin", "user"), r.UserHandler.FindByEmail)
-	users.Post("", r.UserHandler.Create)
-	users.Put("/:id", r.JWTMiddleware.Authentication, r.JWTMiddleware.Authorization("admin"), r.UserHandler.Update)
-	users.Patch("/:id", r.JWTMiddleware.Authentication, r.JWTMiddleware.Authorization("admin"), r.UserHandler.UpdatePartial)
-	users.Delete("/:id", r.JWTMiddleware.Authentication, r.JWTMiddleware.Authorization("admin"), r.UserHandler.Delete)
+	users.Get("", r.JWTMiddleware.Authentication, r.JWTMiddleware.Authorization("admin", "supervisor", "user"), r.UserHandler.FindAll)
+	users.Get("/:id", r.JWTMiddleware.Authentication, r.JWTMiddleware.Authorization("admin", "supervisor", "user"), r.UserHandler.FindByID)
+	users.Get("/email/:email", r.JWTMiddleware.Authentication, r.JWTMiddleware.Authorization("admin", "supervisor", "user"), r.UserHandler.FindByEmail)
+	users.Post("", r.JWTMiddleware.Authentication, r.JWTMiddleware.Authorization("admin", "supervisor", "user"), r.UserHandler.Create)
+	users.Put("/:id", r.JWTMiddleware.Authentication, r.JWTMiddleware.Authorization("admin", "supervisor", "user"), r.UserHandler.Update)
+	users.Patch("/:id", r.JWTMiddleware.Authentication, r.JWTMiddleware.Authorization("admin", "supervisor", "user"), r.UserHandler.UpdatePartial)
+	users.Delete("/:id", r.JWTMiddleware.Authentication, r.JWTMiddleware.Authorization("admin", "supervisor", "user"), r.UserHandler.Delete)
 }
