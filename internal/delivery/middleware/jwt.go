@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"errors"
+	"net/http"
 	"strings"
 
 	"github.com/banggibima/be-itam/pkg/config"
@@ -26,11 +27,11 @@ func NewJWTMiddleware(
 func (j *JWTMiddleware) Authentication(c *fiber.Ctx) error {
 	authorization := c.Get("Authorization")
 	if authorization == "" {
-		return c.Status(fiber.StatusUnauthorized).JSON(response.ResponseError(errors.New("header otorisasi diperlukan")))
+		return c.Status(http.StatusUnauthorized).JSON(response.ResponseError(errors.New("header otorisasi diperlukan")))
 	}
 
 	if !strings.HasPrefix(authorization, "Bearer ") {
-		return c.Status(fiber.StatusUnauthorized).JSON(response.ResponseError(errors.New("header otorisasi harus berupa token bearer")))
+		return c.Status(http.StatusUnauthorized).JSON(response.ResponseError(errors.New("header otorisasi harus berupa token bearer")))
 	}
 
 	token := strings.TrimPrefix(authorization, "Bearer ")
@@ -39,7 +40,7 @@ func (j *JWTMiddleware) Authentication(c *fiber.Ctx) error {
 		Secret: j.Config.JWT.SecretAccess,
 	}, token)
 	if err != nil {
-		return c.Status(fiber.StatusUnauthorized).JSON(response.ResponseError(err))
+		return c.Status(http.StatusUnauthorized).JSON(response.ResponseError(err))
 	}
 
 	c.Locals("claims", claims)
@@ -51,7 +52,7 @@ func (j *JWTMiddleware) Authorization(roles ...string) fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		claims, ok := c.Locals("claims").(*jwt.Token).Claims.(jwt.MapClaims)
 		if !ok {
-			return c.Status(fiber.StatusUnauthorized).JSON(response.ResponseError(errors.New("klaim token tidak valid")))
+			return c.Status(http.StatusUnauthorized).JSON(response.ResponseError(errors.New("klaim token tidak valid")))
 		}
 
 		for _, role := range roles {
@@ -60,6 +61,6 @@ func (j *JWTMiddleware) Authorization(roles ...string) fiber.Handler {
 			}
 		}
 
-		return c.Status(fiber.StatusForbidden).JSON(response.ResponseError(errors.New("tidak diizinkan mengakses resource ini")))
+		return c.Status(http.StatusForbidden).JSON(response.ResponseError(errors.New("tidak diizinkan mengakses resource ini")))
 	}
 }
