@@ -1,8 +1,3 @@
-/bin/
-/obj/
-
-/vendor/
-
 *.test
 *.out
 
@@ -15,8 +10,8 @@
 go.work
 go.work.sum
 
-.vscode/
-.idea/
+.vscode
+.idea
 *.iml
 
 .DS_Store
