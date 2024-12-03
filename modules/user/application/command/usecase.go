@@ -56,7 +56,7 @@ func (u *UserCommandUsecase) Create(dto *UserCreateRequestDTO) (*UserCreateRespo
 		Name:       *user.Name,
 		Email:      *user.Email,
 		Role:       *user.Role,
-		JoinDate:   *user.JoinDate,
+		JoinDate:   user.JoinDate,
 		DivisionID: user.DivisionID,
 		PositionID: user.PositionID,
 		CreatedAt:  user.CreatedAt,
@@ -74,7 +74,7 @@ func (u *UserCommandUsecase) Update(dto *UserUpdateRequestDTO) (*UserUpdateRespo
 		Email:      &dto.Email,
 		Password:   &dto.Password,
 		Role:       &dto.Role,
-		JoinDate:   &dto.JoinDate,
+		JoinDate:   dto.JoinDate,
 		DivisionID: dto.DivisionID,
 		PositionID: dto.PositionID,
 	}
@@ -96,15 +96,17 @@ func (u *UserCommandUsecase) Update(dto *UserUpdateRequestDTO) (*UserUpdateRespo
 		Name:       *user.Name,
 		Email:      *user.Email,
 		Role:       *user.Role,
-		JoinDate:   *user.JoinDate,
+		JoinDate:   user.JoinDate,
 		DivisionID: user.DivisionID,
 		PositionID: user.PositionID,
+		CreatedAt:  user.CreatedAt,
+		UpdatedAt:  user.UpdatedAt,
 	}
 
 	return response, nil
 }
 
-func (u *UserCommandUsecase) UpdatePartial(dto *UserUpdatePartialRequestDTO) (*UserUpdateResponseDTO, error) {
+func (u *UserCommandUsecase) UpdatePartial(dto *UserUpdatePartialRequestDTO) (*UserUpdatePartialResponseDTO, error) {
 	user := &domain.User{
 		ID: dto.ID,
 	}
@@ -146,19 +148,21 @@ func (u *UserCommandUsecase) UpdatePartial(dto *UserUpdatePartialRequestDTO) (*U
 		user.PositionID = dto.PositionID
 	}
 
-	if err := u.UserService.Update(user); err != nil {
+	if err := u.UserService.UpdatePartial(user); err != nil {
 		return nil, err
 	}
 
-	response := &UserUpdateResponseDTO{
+	response := &UserUpdatePartialResponseDTO{
 		ID:         user.ID,
 		NIP:        *user.NIP,
 		Name:       *user.Name,
 		Email:      *user.Email,
 		Role:       *user.Role,
-		JoinDate:   *user.JoinDate,
+		JoinDate:   user.JoinDate,
 		DivisionID: user.DivisionID,
 		PositionID: user.PositionID,
+		CreatedAt:  user.CreatedAt,
+		UpdatedAt:  user.UpdatedAt,
 	}
 
 	return response, nil

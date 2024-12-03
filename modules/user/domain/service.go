@@ -1,6 +1,8 @@
 package domain
 
-import "github.com/banggibima/be-itam/pkg/config"
+import (
+	"github.com/banggibima/be-itam/pkg/config"
+)
 
 type UserService struct {
 	Config                 *config.Config

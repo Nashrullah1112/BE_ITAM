@@ -217,6 +217,7 @@ func (r *PostgresUserRepository) Update(user *domain.User) error {
 
 	err = tx.QueryRow(
 		query,
+		user.ID,
 		user.NIP,
 		user.Name,
 		user.Email,
@@ -225,7 +226,6 @@ func (r *PostgresUserRepository) Update(user *domain.User) error {
 		user.JoinDate,
 		user.DivisionID,
 		user.PositionID,
-		user.CreatedAt,
 		user.UpdatedAt,
 	).Scan(
 		&user.ID,
@@ -234,7 +234,6 @@ func (r *PostgresUserRepository) Update(user *domain.User) error {
 		&user.Email,
 		&user.Password,
 		&user.Role,
-		&user.Password,
 		&user.JoinDate,
 		&user.DivisionID,
 		&user.PositionID,
@@ -313,6 +312,7 @@ func (r *PostgresUserRepository) UpdatePartial(user *domain.User) error {
 
 	err = tx.QueryRow(query, args...).Scan(
 		&user.ID,
+		&user.NIP,
 		&user.Name,
 		&user.Email,
 		&user.Password,
