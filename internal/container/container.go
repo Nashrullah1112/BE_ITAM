@@ -20,7 +20,7 @@ import (
 
 type Container struct {
 	Config  *config.Config
-	Fiber   *fiber.App
+	App     *fiber.App
 	Logger  *logrus.Logger
 	DB      *sql.DB
 	Storage *minio.Client
@@ -28,14 +28,14 @@ type Container struct {
 
 func NewContainer(
 	config *config.Config,
-	fiber *fiber.App,
+	app *fiber.App,
 	logger *logrus.Logger,
 	db *sql.DB,
 	storage *minio.Client,
 ) *Container {
 	return &Container{
 		Config:  config,
-		Fiber:   fiber,
+		App:     app,
 		Logger:  logger,
 		DB:      db,
 		Storage: storage,
@@ -52,10 +52,15 @@ func (c *Container) Setup() error {
 	authCommandUsecase := authcommand.NewAuthCommandUsecase(c.Config, userService)
 	authHandler := handlers.NewAuthHandler(c.Config, authCommandUsecase)
 
+	corsMiddleware := middleware.NewCORSMiddleware(c.Config)
 	jwtMiddleware := middleware.NewJWTMiddleware(c.Config)
+	loggerMiddleware := middleware.NewLoggerMiddleware(c.Config, c.Logger)
+
+	c.App.Use(corsMiddleware.CORS())
+	c.App.Use(loggerMiddleware.Logging())
 
 	routes := &routes.Routes{
-		App:           c.Fiber,
+		App:           c.App,
 		UserHandler:   userHandler,
 		AuthHandler:   authHandler,
 		JWTMiddleware: jwtMiddleware,
@@ -68,7 +73,7 @@ func (c *Container) Setup() error {
 
 func (c *Container) Start() error {
 	c.Logger.Info("server is running on port " + strconv.Itoa(c.Config.App.Port))
-	c.Fiber.Listen(":" + strconv.Itoa(c.Config.App.Port))
+	c.App.Listen(":" + strconv.Itoa(c.Config.App.Port))
 
 	return nil
 }
