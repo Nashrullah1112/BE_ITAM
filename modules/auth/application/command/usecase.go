@@ -2,7 +2,6 @@ package command
 
 import (
 	"errors"
-	"fmt"
 	"time"
 
 	userquery "github.com/banggibima/be-itam/modules/user/application/query"
@@ -37,8 +36,6 @@ func (u *AuthCommandUsecase) Register(dto *AuthRegisterRequestDTO) (*AuthRegiste
 		Password: &dto.Password,
 		Role:     &role,
 	}
-
-	fmt.Println(user)
 
 	if dto.Password != dto.ConfirmPassword {
 		return nil, errors.New("kata sandi tidak cocok")
