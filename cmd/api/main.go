@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/banggibima/be-itam/internal/container"
+	"github.com/banggibima/be-itam/internal/persistence/minio"
 	"github.com/banggibima/be-itam/internal/persistence/postgres"
 	"github.com/banggibima/be-itam/pkg/config"
 	"github.com/banggibima/be-itam/pkg/logger"
@@ -24,11 +25,16 @@ func main() {
 		panic(err)
 	}
 
+	storage, err := minio.Client(config)
+	if err != nil {
+		panic(err)
+	}
+
 	app := fiber.New(fiber.Config{
 		DisableStartupMessage: true,
 	})
 
-	deps := container.NewContainer(config, app, logger, db, nil)
+	deps := container.NewContainer(config, app, logger, db, storage)
 
 	if err := deps.Setup(); err != nil {
 		panic(err)
