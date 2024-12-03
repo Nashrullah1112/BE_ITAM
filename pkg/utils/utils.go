@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/go-playground/validator/v10"
+	"github.com/sirupsen/logrus"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -89,5 +90,20 @@ func FormatValidationError(field validator.FieldError) string {
 		return lower + " bukan UUID yang valid"
 	default:
 		return lower + " tidak valid"
+	}
+}
+
+func FormatLogRequest(logger *logrus.Logger, method, uri string, status, latency int) {
+	switch {
+	case status >= 200 && status < 300:
+		logger.Infof("request: method=" + method + " uri=" + uri + " status=" + strconv.Itoa(status) + " latency=" + strconv.Itoa(latency))
+	case status >= 300 && status < 400:
+		logger.Warnf("client error: method=" + method + " uri=" + uri + " status=" + strconv.Itoa(status) + " latency=" + strconv.Itoa(latency))
+	case status >= 400 && status < 500:
+		logger.Warnf("client error: method=" + method + " uri=" + uri + " status=" + strconv.Itoa(status) + " latency=" + strconv.Itoa(latency))
+	case status >= 500:
+		logger.Errorf("server error: method=" + method + " uri=" + uri + " status=" + strconv.Itoa(status) + " latency=" + strconv.Itoa(latency))
+	default:
+		logger.Infof("request: method=" + method + " uri=" + uri + " status=" + strconv.Itoa(status) + " latency=" + strconv.Itoa(latency))
 	}
 }
