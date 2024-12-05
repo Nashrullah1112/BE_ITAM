@@ -3,7 +3,7 @@ package command
 import (
 	"errors"
 
-	"github.com/banggibima/be-itam/modules/user/domain"
+	"github.com/banggibima/be-itam/modules/users/domain"
 	"github.com/banggibima/be-itam/pkg/config"
 	"github.com/banggibima/be-itam/pkg/utils"
 )
@@ -23,7 +23,7 @@ func NewUserCommandUsecase(
 	}
 }
 
-func (u *UserCommandUsecase) Create(dto *UserCreateRequestDTO) (*UserCreateResponseDTO, error) {
+func (u *UserCommandUsecase) Create(dto *CreateUserRequestDTO) (*CreateUserResponseDTO, error) {
 	user := &domain.User{
 		NIP:        &dto.NIP,
 		Name:       &dto.Name,
@@ -50,12 +50,12 @@ func (u *UserCommandUsecase) Create(dto *UserCreateRequestDTO) (*UserCreateRespo
 		return nil, err
 	}
 
-	response := &UserCreateResponseDTO{
+	response := &CreateUserResponseDTO{
 		ID:         user.ID,
-		NIP:        *user.NIP,
-		Name:       *user.Name,
-		Email:      *user.Email,
-		Role:       *user.Role,
+		NIP:        user.NIP,
+		Name:       user.Name,
+		Email:      user.Email,
+		Role:       user.Role,
 		JoinDate:   user.JoinDate,
 		DivisionID: user.DivisionID,
 		PositionID: user.PositionID,
@@ -66,7 +66,7 @@ func (u *UserCommandUsecase) Create(dto *UserCreateRequestDTO) (*UserCreateRespo
 	return response, nil
 }
 
-func (u *UserCommandUsecase) Update(dto *UserUpdateRequestDTO) (*UserUpdateResponseDTO, error) {
+func (u *UserCommandUsecase) Update(dto *UpdateUserRequestDTO) (*UpdateUserResponseDTO, error) {
 	user := &domain.User{
 		ID:         dto.ID,
 		NIP:        &dto.NIP,
@@ -74,7 +74,7 @@ func (u *UserCommandUsecase) Update(dto *UserUpdateRequestDTO) (*UserUpdateRespo
 		Email:      &dto.Email,
 		Password:   &dto.Password,
 		Role:       &dto.Role,
-		JoinDate:   dto.JoinDate,
+		JoinDate:   &dto.JoinDate,
 		DivisionID: dto.DivisionID,
 		PositionID: dto.PositionID,
 	}
@@ -90,12 +90,12 @@ func (u *UserCommandUsecase) Update(dto *UserUpdateRequestDTO) (*UserUpdateRespo
 		return nil, err
 	}
 
-	response := &UserUpdateResponseDTO{
+	response := &UpdateUserResponseDTO{
 		ID:         user.ID,
-		NIP:        *user.NIP,
-		Name:       *user.Name,
-		Email:      *user.Email,
-		Role:       *user.Role,
+		NIP:        user.NIP,
+		Name:       user.Name,
+		Email:      user.Email,
+		Role:       user.Role,
 		JoinDate:   user.JoinDate,
 		DivisionID: user.DivisionID,
 		PositionID: user.PositionID,
@@ -106,7 +106,7 @@ func (u *UserCommandUsecase) Update(dto *UserUpdateRequestDTO) (*UserUpdateRespo
 	return response, nil
 }
 
-func (u *UserCommandUsecase) UpdatePartial(dto *UserUpdatePartialRequestDTO) (*UserUpdatePartialResponseDTO, error) {
+func (u *UserCommandUsecase) UpdatePartial(dto *UpdatePartialUserRequestDTO) (*UpdatePartialUserResponseDTO, error) {
 	user := &domain.User{
 		ID: dto.ID,
 	}
@@ -152,12 +152,12 @@ func (u *UserCommandUsecase) UpdatePartial(dto *UserUpdatePartialRequestDTO) (*U
 		return nil, err
 	}
 
-	response := &UserUpdatePartialResponseDTO{
+	response := &UpdatePartialUserResponseDTO{
 		ID:         user.ID,
-		NIP:        *user.NIP,
-		Name:       *user.Name,
-		Email:      *user.Email,
-		Role:       *user.Role,
+		NIP:        user.NIP,
+		Name:       user.Name,
+		Email:      user.Email,
+		Role:       user.Role,
 		JoinDate:   user.JoinDate,
 		DivisionID: user.DivisionID,
 		PositionID: user.PositionID,
@@ -168,7 +168,7 @@ func (u *UserCommandUsecase) UpdatePartial(dto *UserUpdatePartialRequestDTO) (*U
 	return response, nil
 }
 
-func (u *UserCommandUsecase) Delete(dto *UserDeleteRequestDTO) (*UserDeleteResponseDTO, error) {
+func (u *UserCommandUsecase) Delete(dto *DeleteUserRequestDTO) (*DeleteUserResponseDTO, error) {
 	user := &domain.User{
 		ID: dto.ID,
 	}
@@ -177,7 +177,7 @@ func (u *UserCommandUsecase) Delete(dto *UserDeleteRequestDTO) (*UserDeleteRespo
 		return nil, err
 	}
 
-	response := &UserDeleteResponseDTO{
+	response := &DeleteUserResponseDTO{
 		ID: user.ID,
 	}
 

@@ -1,7 +1,7 @@
 package query
 
 import (
-	"github.com/banggibima/be-itam/modules/user/domain"
+	"github.com/banggibima/be-itam/modules/users/domain"
 	"github.com/banggibima/be-itam/pkg/config"
 )
 
@@ -39,10 +39,10 @@ func (u *UserQueryUsecase) FindAll(offset, limit int, sort, order string, filter
 	for _, user := range users {
 		response = append(response, &UserResponseDTO{
 			ID:         user.ID,
-			NIP:        *user.NIP,
-			Name:       *user.Name,
-			Email:      *user.Email,
-			Role:       *user.Role,
+			NIP:        user.NIP,
+			Name:       user.Name,
+			Email:      user.Email,
+			Role:       user.Role,
 			JoinDate:   user.JoinDate,
 			DivisionID: user.DivisionID,
 			PositionID: user.PositionID,
@@ -62,10 +62,10 @@ func (u *UserQueryUsecase) FindByID(id int) (*UserResponseDTO, error) {
 
 	response := &UserResponseDTO{
 		ID:         user.ID,
-		NIP:        *user.NIP,
-		Name:       *user.Name,
-		Email:      *user.Email,
-		Role:       *user.Role,
+		NIP:        user.NIP,
+		Name:       user.Name,
+		Email:      user.Email,
+		Role:       user.Role,
 		JoinDate:   user.JoinDate,
 		DivisionID: user.DivisionID,
 		PositionID: user.PositionID,
@@ -84,10 +84,10 @@ func (u *UserQueryUsecase) FindByEmail(email string) (*UserResponseDTO, error) {
 
 	response := &UserResponseDTO{
 		ID:         user.ID,
-		NIP:        *user.NIP,
-		Name:       *user.Name,
-		Email:      *user.Email,
-		Role:       *user.Role,
+		NIP:        user.NIP,
+		Name:       user.Name,
+		Email:      user.Email,
+		Role:       user.Role,
 		JoinDate:   user.JoinDate,
 		DivisionID: user.DivisionID,
 		PositionID: user.PositionID,

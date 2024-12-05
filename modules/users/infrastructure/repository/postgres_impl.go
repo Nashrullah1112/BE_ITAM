@@ -7,7 +7,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/banggibima/be-itam/modules/user/domain"
+	"github.com/banggibima/be-itam/modules/users/domain"
 	"github.com/banggibima/be-itam/pkg/config"
 	"github.com/lib/pq"
 	"github.com/sirupsen/logrus"
@@ -306,9 +306,11 @@ func (r *PostgresUserRepository) UpdatePartial(user *domain.User) error {
 	}
 
 	user.UpdatedAt = time.Now()
+	query += "updated_at = $" + strconv.Itoa(len(args)+1)
+	args = append(args, user.UpdatedAt)
 
-	query += "updated_at = $" + strconv.Itoa(len(args)+1) + " WHERE id = $" + strconv.Itoa(len(args)+2) + " RETURNING *"
-	args = append(args, user.UpdatedAt, user.ID)
+	query += " WHERE id = $" + strconv.Itoa(len(args)+1) + " RETURNING *"
+	args = append(args, user.ID)
 
 	err = tx.QueryRow(query, args...).Scan(
 		&user.ID,
@@ -347,12 +349,18 @@ func (r *PostgresUserRepository) Delete(user *domain.User) error {
 
 	query := "DELETE FROM users WHERE id = $1"
 
-	_, err = tx.Exec(query, user.ID)
+	result, err := tx.Exec(query, user.ID)
 	if err != nil {
-		if errors.Is(err, sql.ErrNoRows) {
-			return errors.New("data tidak ditemukan")
-		}
 		return err
+	}
+
+	affected, err := result.RowsAffected()
+	if err != nil {
+		return err
+	}
+
+	if affected == 0 {
+		return errors.New("data tidak ditemukan")
 	}
 
 	return tx.Commit()
