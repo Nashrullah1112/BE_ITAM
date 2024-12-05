@@ -2,9 +2,9 @@ package postgres
 
 import (
 	"database/sql"
-	"fmt"
 	"os"
 	"path/filepath"
+	"strconv"
 	"strings"
 
 	"github.com/banggibima/be-itam/pkg/config"
@@ -14,6 +14,7 @@ import (
 )
 
 func Client(config *config.Config, logger *logrus.Logger) (*sql.DB, error) {
+	driver := "postgres://"
 	host := config.Postgres.Host
 	port := config.Postgres.Port
 	user := config.Postgres.Username
@@ -22,7 +23,7 @@ func Client(config *config.Config, logger *logrus.Logger) (*sql.DB, error) {
 
 	sslmode := "disable"
 
-	url := fmt.Sprint("postgres://", user, ":", password, "@", host, ":", port, "/", dbname, "?sslmode=", sslmode)
+	url := driver + user + ":" + password + "@" + host + ":" + strconv.Itoa(port) + "/" + dbname + "?sslmode=" + sslmode
 
 	client, err := sql.Open("postgres", url)
 	if err != nil {
