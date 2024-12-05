@@ -4,7 +4,7 @@ CREATE TABLE IF NOT EXISTS assets (
   brand TEXT NULL,
   model TEXT NULL,
   receipt_number TEXT NULL,
-  active BOOLEAN NULL,
+  status TEXT NULL,
   vendor_id INT NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
