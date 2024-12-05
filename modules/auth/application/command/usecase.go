@@ -4,8 +4,8 @@ import (
 	"errors"
 	"time"
 
-	userquery "github.com/banggibima/be-itam/modules/user/application/query"
-	userdomain "github.com/banggibima/be-itam/modules/user/domain"
+	userquery "github.com/banggibima/be-itam/modules/users/application/query"
+	userdomain "github.com/banggibima/be-itam/modules/users/domain"
 	"github.com/banggibima/be-itam/pkg/config"
 	"github.com/banggibima/be-itam/pkg/middleware"
 	"github.com/banggibima/be-itam/pkg/utils"
@@ -59,7 +59,7 @@ func (u *AuthCommandUsecase) Register(dto *AuthRegisterRequestDTO) (*AuthRegiste
 		Issuer:   u.Config.JWT.Issuer,
 	}, &userquery.UserResponseDTO{
 		ID:   user.ID,
-		Role: *user.Role,
+		Role: user.Role,
 	})
 
 	expire := time.Now().Add(time.Duration(u.Config.JWT.ExpireAccess) * time.Second)
@@ -69,10 +69,10 @@ func (u *AuthCommandUsecase) Register(dto *AuthRegisterRequestDTO) (*AuthRegiste
 		Expire: expire.UTC(),
 		User: UserResponseDTO{
 			ID:         user.ID,
-			NIP:        *user.NIP,
-			Name:       *user.Name,
-			Email:      *user.Email,
-			Role:       *user.Role,
+			NIP:        user.NIP,
+			Name:       user.Name,
+			Email:      user.Email,
+			Role:       user.Role,
 			JoinDate:   user.JoinDate,
 			DivisionID: user.DivisionID,
 			PositionID: user.PositionID,
@@ -107,7 +107,7 @@ func (u *AuthCommandUsecase) Login(dto *AuthLoginRequestDTO) (*AuthLoginResponse
 		Issuer:   u.Config.JWT.Issuer,
 	}, &userquery.UserResponseDTO{
 		ID:   user.ID,
-		Role: *user.Role,
+		Role: user.Role,
 	})
 
 	expire := time.Now().Add(time.Duration(u.Config.JWT.ExpireAccess) * time.Second)
@@ -117,10 +117,10 @@ func (u *AuthCommandUsecase) Login(dto *AuthLoginRequestDTO) (*AuthLoginResponse
 		Expire: expire.UTC(),
 		User: UserResponseDTO{
 			ID:         user.ID,
-			NIP:        *user.NIP,
-			Name:       *user.Name,
-			Email:      *user.Email,
-			Role:       *user.Role,
+			NIP:        user.NIP,
+			Name:       user.Name,
+			Email:      user.Email,
+			Role:       user.Role,
 			JoinDate:   user.JoinDate,
 			DivisionID: user.DivisionID,
 			PositionID: user.PositionID,
