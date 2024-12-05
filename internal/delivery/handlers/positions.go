@@ -4,8 +4,8 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/banggibima/be-itam/modules/users/application/command"
-	"github.com/banggibima/be-itam/modules/users/application/query"
+	"github.com/banggibima/be-itam/modules/positions/application/command"
+	"github.com/banggibima/be-itam/modules/positions/application/query"
 	"github.com/banggibima/be-itam/pkg/config"
 	"github.com/banggibima/be-itam/pkg/response"
 	"github.com/banggibima/be-itam/pkg/utils"
@@ -13,25 +13,25 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-type UserHandler struct {
-	Config             *config.Config
-	UserCommandUsecase *command.UserCommandUsecase
-	UserQueryUsecase   *query.UserQueryUsecase
+type PositionHandler struct {
+	Config                 *config.Config
+	PositionCommandUsecase *command.PositionCommandUsecase
+	PositionQueryUsecase   *query.PositionQueryUsecase
 }
 
-func NewUserHandler(
+func NewPositionHandler(
 	config *config.Config,
-	userCommandUsecase *command.UserCommandUsecase,
-	userQueryUsecase *query.UserQueryUsecase,
-) *UserHandler {
-	return &UserHandler{
-		Config:             config,
-		UserCommandUsecase: userCommandUsecase,
-		UserQueryUsecase:   userQueryUsecase,
+	positionCommandUsecase *command.PositionCommandUsecase,
+	positionQueryUsecase *query.PositionQueryUsecase,
+) *PositionHandler {
+	return &PositionHandler{
+		Config:                 config,
+		PositionCommandUsecase: positionCommandUsecase,
+		PositionQueryUsecase:   positionQueryUsecase,
 	}
 }
 
-func (h *UserHandler) FindAll(c *fiber.Ctx) error {
+func (h *PositionHandler) FindAll(c *fiber.Ctx) error {
 	meta := response.Meta{}
 
 	page, _ := strconv.Atoi(c.Query("page"))
@@ -55,12 +55,12 @@ func (h *UserHandler) FindAll(c *fiber.Ctx) error {
 
 	filters := make(map[string]interface{})
 
-	total, err := h.UserQueryUsecase.CountAll()
+	total, err := h.PositionQueryUsecase.CountAll()
 	if err != nil {
 		return c.Status(http.StatusInternalServerError).JSON(response.ResponseError(err))
 	}
 
-	data, err := h.UserQueryUsecase.FindAll(offset, limit, sort, order, filters)
+	data, err := h.PositionQueryUsecase.FindAll(offset, limit, sort, order, filters)
 	if err != nil {
 		return c.Status(http.StatusInternalServerError).JSON(response.ResponseError(err))
 	}
@@ -71,13 +71,13 @@ func (h *UserHandler) FindAll(c *fiber.Ctx) error {
 	return c.Status(http.StatusOK).JSON(response.ResponsePagination(data, meta))
 }
 
-func (h *UserHandler) FindByID(c *fiber.Ctx) error {
+func (h *PositionHandler) FindByID(c *fiber.Ctx) error {
 	id, err := strconv.Atoi(c.Params("id"))
 	if err != nil {
 		return c.Status(http.StatusBadRequest).JSON(response.ResponseError(err))
 	}
 
-	data, err := h.UserQueryUsecase.FindByID(id)
+	data, err := h.PositionQueryUsecase.FindByID(id)
 	if err != nil {
 		return c.Status(http.StatusInternalServerError).JSON(response.ResponseError(err))
 	}
@@ -85,19 +85,8 @@ func (h *UserHandler) FindByID(c *fiber.Ctx) error {
 	return c.Status(http.StatusOK).JSON(response.ResponseData(data))
 }
 
-func (h *UserHandler) FindByEmail(c *fiber.Ctx) error {
-	email := c.Params("email")
-
-	data, err := h.UserQueryUsecase.FindByEmail(email)
-	if err != nil {
-		return c.Status(http.StatusInternalServerError).JSON(response.ResponseError(err))
-	}
-
-	return c.Status(http.StatusOK).JSON(response.ResponseData(data))
-}
-
-func (h *UserHandler) Create(c *fiber.Ctx) error {
-	dto := new(command.CreateUserRequestDTO)
+func (h *PositionHandler) Create(c *fiber.Ctx) error {
+	dto := new(command.CreatePositionRequestDTO)
 
 	if err := c.BodyParser(dto); err != nil {
 		return c.Status(http.StatusBadRequest).JSON(response.ResponseError(err))
@@ -113,7 +102,7 @@ func (h *UserHandler) Create(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).JSON(response.ResponseValidation(fields))
 	}
 
-	data, err := h.UserCommandUsecase.Create(dto)
+	data, err := h.PositionCommandUsecase.Create(dto)
 	if err != nil {
 		return c.Status(http.StatusInternalServerError).JSON(response.ResponseError(err))
 	}
@@ -121,8 +110,8 @@ func (h *UserHandler) Create(c *fiber.Ctx) error {
 	return c.Status(http.StatusCreated).JSON(response.ResponseData(data))
 }
 
-func (h *UserHandler) Update(c *fiber.Ctx) error {
-	dto := new(command.UpdateUserRequestDTO)
+func (h *PositionHandler) Update(c *fiber.Ctx) error {
+	dto := new(command.UpdatePositionRequestDTO)
 
 	id, err := strconv.Atoi(c.Params("id"))
 	if err != nil {
@@ -145,7 +134,7 @@ func (h *UserHandler) Update(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).JSON(response.ResponseValidation(fields))
 	}
 
-	data, err := h.UserCommandUsecase.Update(dto)
+	data, err := h.PositionCommandUsecase.Update(dto)
 	if err != nil {
 		return c.Status(http.StatusInternalServerError).JSON(response.ResponseError(err))
 	}
@@ -153,8 +142,8 @@ func (h *UserHandler) Update(c *fiber.Ctx) error {
 	return c.Status(http.StatusOK).JSON(response.ResponseData(data))
 }
 
-func (h *UserHandler) UpdatePartial(c *fiber.Ctx) error {
-	dto := new(command.UpdatePartialUserRequestDTO)
+func (h *PositionHandler) UpdatePartial(c *fiber.Ctx) error {
+	dto := new(command.UpdatePartialPositionRequestDTO)
 
 	id, err := strconv.Atoi(c.Params("id"))
 	if err != nil {
@@ -177,7 +166,7 @@ func (h *UserHandler) UpdatePartial(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).JSON(response.ResponseValidation(fields))
 	}
 
-	data, err := h.UserCommandUsecase.UpdatePartial(dto)
+	data, err := h.PositionCommandUsecase.UpdatePartial(dto)
 	if err != nil {
 		return c.Status(http.StatusInternalServerError).JSON(response.ResponseError(err))
 	}
@@ -185,8 +174,8 @@ func (h *UserHandler) UpdatePartial(c *fiber.Ctx) error {
 	return c.Status(http.StatusOK).JSON(response.ResponseData(data))
 }
 
-func (h *UserHandler) Delete(c *fiber.Ctx) error {
-	dto := new(command.DeleteUserRequestDTO)
+func (h *PositionHandler) Delete(c *fiber.Ctx) error {
+	dto := new(command.DeletePositionRequestDTO)
 
 	id, err := strconv.Atoi(c.Params("id"))
 	if err != nil {
@@ -205,7 +194,7 @@ func (h *UserHandler) Delete(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).JSON(response.ResponseValidation(fields))
 	}
 
-	data, err := h.UserCommandUsecase.Delete(dto)
+	data, err := h.PositionCommandUsecase.Delete(dto)
 	if err != nil {
 		return c.Status(http.StatusInternalServerError).JSON(response.ResponseError(err))
 	}
