@@ -7,7 +7,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/banggibima/be-itam/modules/division/domain"
+	"github.com/banggibima/be-itam/modules/divisions/domain"
 	"github.com/banggibima/be-itam/pkg/config"
 	"github.com/lib/pq"
 	"github.com/sirupsen/logrus"
@@ -112,27 +112,6 @@ func (r *PostgresDivisionRepository) FindByID(id int) (*domain.Division, error) 
 	return division, nil
 }
 
-func (r *PostgresDivisionRepository) FindByEmail(email string) (*domain.Division, error) {
-	query := "SELECT * FROM divisions WHERE email = $1"
-
-	division := &domain.Division{}
-
-	err := r.DB.QueryRow(query, email).Scan(
-		&division.ID,
-		&division.Name,
-		&division.CreatedAt,
-		&division.UpdatedAt,
-	)
-	if err != nil {
-		if errors.Is(err, sql.ErrNoRows) {
-			return nil, errors.New("data tidak ditemukan")
-		}
-		return nil, err
-	}
-
-	return division, nil
-}
-
 func (r *PostgresDivisionRepository) Create(division *domain.Division) error {
 	tx, err := r.DB.Begin()
 	if err != nil {
@@ -222,9 +201,11 @@ func (r *PostgresDivisionRepository) UpdatePartial(division *domain.Division) er
 	}
 
 	division.UpdatedAt = time.Now()
+	query += "updated_at = $" + strconv.Itoa(len(args)+1)
+	args = append(args, division.UpdatedAt)
 
-	query += "updated_at = $" + strconv.Itoa(len(args)+1) + " WHERE id = $" + strconv.Itoa(len(args)+2) + " RETURNING *"
-	args = append(args, division.UpdatedAt, division.ID)
+	query += " WHERE id = $" + strconv.Itoa(len(args)+1) + " RETURNING *"
+	args = append(args, division.ID)
 
 	err = tx.QueryRow(query, args...).Scan(
 		&division.ID,
@@ -256,12 +237,18 @@ func (r *PostgresDivisionRepository) Delete(division *domain.Division) error {
 
 	query := "DELETE FROM divisions WHERE id = $1"
 
-	_, err = tx.Exec(query, division.ID)
+	result, err := tx.Exec(query, division.ID)
 	if err != nil {
-		if errors.Is(err, sql.ErrNoRows) {
-			return errors.New("data tidak ditemukan")
-		}
 		return err
+	}
+
+	affected, err := result.RowsAffected()
+	if err != nil {
+		return err
+	}
+
+	if affected == 0 {
+		return errors.New("data tidak ditemukan")
 	}
 
 	return tx.Commit()
