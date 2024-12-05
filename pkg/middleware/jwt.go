@@ -5,7 +5,7 @@ import (
 	"strconv"
 	"time"
 
-	userquery "github.com/banggibima/be-itam/modules/user/application/query"
+	userquery "github.com/banggibima/be-itam/modules/users/application/query"
 	"github.com/golang-jwt/jwt/v5"
 )
 
@@ -32,7 +32,7 @@ func EncodedAccess(j *JWT, user *userquery.UserResponseDTO) (*jwt.Token, error) 
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Duration(j.Expire) * time.Second)),
 			IssuedAt:  jwt.NewNumericDate(time.Now()),
 		},
-		Role: user.Role,
+		Role: *user.Role,
 	}
 
 	raw, err := jwt.NewWithClaims(jwt.SigningMethodHS256, claims).SignedString([]byte(j.Secret))
@@ -82,7 +82,7 @@ func EncodedRefresh(j *JWT, user *userquery.UserResponseDTO) (*jwt.Token, error)
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Duration(j.Expire) * time.Second)),
 			IssuedAt:  jwt.NewNumericDate(time.Now()),
 		},
-		Role: user.Role,
+		Role: *user.Role,
 	}
 
 	raw, err := jwt.NewWithClaims(jwt.SigningMethodHS256, claims).SignedString([]byte(j.Secret))
